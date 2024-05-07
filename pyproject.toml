@@ -28,6 +28,7 @@ cloudinary = "^1.40.0"
 
 [tool.poetry.group.dev.dependencies]
 faker = "^24.8.0"
+sphinx = "^7.3.7"
 
 [build-system]
 requires = ["poetry-core"]

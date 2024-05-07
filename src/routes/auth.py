@@ -16,6 +16,13 @@ get_refresh_token = HTTPBearer()
 
 @router.get("/")
 async def root():
+    """
+    Main auth route
+
+    :return: "root"
+    :rtype: str
+    """
+
     return {"message": "root"}
 
 

@@ -18,6 +18,9 @@ from fastapi_limiter.depends import RateLimiter
 import redis.asyncio as redis
 from contextlib import asynccontextmanager
 
+from settings import settings
+
+db_uri = settings.get_uri()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -48,6 +51,12 @@ app.include_router(tests_router, prefix='/api')
 
 @app.get("/", dependencies=[Depends(RateLimiter(times=2, seconds=5))])
 def root():
+    """
+    main route
+
+    :return: "Contacts API"
+    :rtype: str
+    """
     return {"message": "Contacts API"}
 
 

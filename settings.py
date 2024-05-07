@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -37,8 +40,13 @@ class Settings(BaseSettings):
         return f"postgresql+asyncpg://{settings.user}:{settings.password}@{settings.domain}:{settings.port}/{settings.db_name}"
 
     model_config = SettingsConfigDict(
-        env_file=".env", env_file_encoding="utf-8", extra="ignore"
+        env_file=Path("../.env").resolve(),
+        env_file_encoding="utf-8",
+        extra="ignore"
     )
 
+
+env_location = Path("../.env").resolve()
+print(env_location)
 
 settings = Settings()
