@@ -29,7 +29,17 @@ async def root():
 @router.post("/signup", response_model=UserSchema, status_code=status.HTTP_201_CREATED)
 async def signup(body: UserSchema, background_tasks: BackgroundTasks, request: Request,
                  db: AsyncSession = Depends(get_db)):
-    #
+    """
+    Create new user
+
+    :param body:
+    :param background_tasks:
+    :param request:
+    :param db:
+    :return: new_user
+    :rtype: UserSchema
+    """
+
     exist_user = await get_user_by_email(body.email, db)
     if exist_user:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Account already exists")
@@ -42,7 +52,15 @@ async def signup(body: UserSchema, background_tasks: BackgroundTasks, request: R
 
 @router.post("/login", response_model=TokenModel)
 async def login(body: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
-    #
+    """
+    Login user
+
+    :param body:
+    :param db:
+    :return: access_token, refresh_token
+    :rtype: TokenModel
+    """
+
     user = await get_user_by_email(body.username, db)
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email")
@@ -62,6 +80,14 @@ async def login(body: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = 
 async def refresh_token(
         credentials: HTTPAuthorizationCredentials = Security(get_refresh_token),
         db: AsyncSession = Depends(get_db)):
+    """
+    Refresh user token
+
+    :param credentials:
+    :param db:
+    :return: access_token, refresh_token
+    :rtype: TokenModel
+    """
     #
     token = credentials.credentials
     email = await auth_service.decode_refresh_token(token)
@@ -80,11 +106,26 @@ async def refresh_token(
 
 @router.get("/secret")
 async def read_item(current_user: User = Depends(auth_service.get_current_user)):
+    """
+    Secret route
+
+    :param current_user:
+    :return: secret message
+    :rtype: str
+    """
     return {"message": 'secret router', "owner": current_user.email}
 
 
 @router.get('/confirmed_email/{token}')
 async def confirmed_email_by_token(token: str, db: AsyncSession = Depends(get_db)):
+    """
+    Confirmed email by token
+
+    :param token:
+    :param db:
+    :return: message
+    :rtype: str
+    """
     email = await auth_service.get_email_from_token(token)
     user = await get_user_by_email(email, db)
     if user is None:
@@ -98,6 +139,16 @@ async def confirmed_email_by_token(token: str, db: AsyncSession = Depends(get_db
 @router.post('/request_email')
 async def request_email(body: RequestEmail, background_tasks: BackgroundTasks, request: Request,
                         db: AsyncSession = Depends(get_db)):
+    """
+    Request email
+
+    :param body:
+    :param background_tasks:
+    :param request:
+    :param db:
+    :return: message
+    :rtype: str
+    """
     user = await get_user_by_email(body.email, db)
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not found")

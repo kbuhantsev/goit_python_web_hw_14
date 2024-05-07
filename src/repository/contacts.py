@@ -6,6 +6,16 @@ from src.schemas.schemas import ContactSchema
 
 
 async def get_contacts(skip: int, limit: int, db: AsyncSession, user: User) -> [Contact]:
+    """
+    Get all users contacts
+
+    :param skip:
+    :param limit:
+    :param db:
+    :param user:
+    :return: contacts
+    :rtype: [Contact]
+    """
     query = select(Contact).where(Contact.user_id == user.id).offset(skip).limit(limit)
     res = await db.execute(query)
     return res.scalars().all()
@@ -16,7 +26,17 @@ async def search_contacts(user: User, db: AsyncSession,
                           surname: str = None,
                           email: str = None,
                           ) -> [Contact]:
+    """
+    Search users contacts
 
+    :param user:
+    :param db:
+    :param name:
+    :param surname:
+    :param email:
+    :return: contacts
+    :rtype: [Contact]
+    """
     params = {}
     if name:
         params['name'] = name
@@ -31,15 +51,32 @@ async def search_contacts(user: User, db: AsyncSession,
 
 
 async def get_contact(user: User, contact_id: int, db: AsyncSession) -> Contact:
+    """
+    Get contact by id
+
+    :param user:
+    :param contact_id:
+    :param db:
+    :return: contact
+    :rtype: Contact
+    """
     query = select(Contact).where(and_(Contact.user_id == user.id, Contact.id == contact_id))
     res = await db.execute(query)
     return res.scalars().first()
 
 
 async def create_contact(user: User, contact: ContactSchema, db: AsyncSession) -> Contact:
+    """
+    Create new contact
+
+    :param user:
+    :param contact:
+    :param db:
+    :return: contact
+    :rtype: Contact
+    """
     contact = Contact(**contact.dict(), user_id=user.id)
     db.add(contact)
-    # await db.flush()
     await db.commit()
     await db.refresh(contact)
 
@@ -47,7 +84,16 @@ async def create_contact(user: User, contact: ContactSchema, db: AsyncSession) -
 
 
 async def update_contact(user: User, contact_id: int, contact: ContactSchema, db: AsyncSession) -> Contact | None:
-    # contact_db = await db.get(Contact, contact_id)
+    """
+    Update contact by id
+
+    :param user:
+    :param contact_id:
+    :param contact:
+    :param db:
+    :return: contact
+    :rtype: Contact
+    """
     query = select(Contact).where(and_(Contact.user_id == user.id, Contact.id == contact_id))
     res = await db.execute(query)
     contact_db = res.scalars().first()
@@ -63,7 +109,15 @@ async def update_contact(user: User, contact_id: int, contact: ContactSchema, db
 
 
 async def delete_contact(user: User, contact_id: int, db: AsyncSession) -> Contact | None:
-    # contact = await db.get(Contact, contact_id)
+    """
+    Delete contact by id
+
+    :param user:
+    :param contact_id:
+    :param db:
+    :return: contact
+    :rtype: Contact
+    """
     query = select(Contact).where(and_(Contact.user_id == user.id, Contact.id == contact_id))
     res = await db.execute(query)
     contact = res.scalars().first()

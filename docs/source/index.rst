@@ -12,19 +12,47 @@ Welcome to Contacts Api's documentation!
 
 
 REST API main
-===================
+=============
 .. automodule:: main
   :members:
   :undoc-members:
   :show-inheritance:
 
-REST API routers
-===================
+REST API auth
+=============
 .. automodule:: src.routes.auth
   :members:
   :undoc-members:
   :show-inheritance:
 
+REST API contacts
+=================
+.. automodule:: src.routes.contacts
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API users
+==============
+.. automodule:: src.routes.users
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+
+REST API service contacts
+=========================
+.. automodule:: src.repository.contacts
+  :members:
+  :undoc-members:
+  :show-inheritance:
+
+REST API service users
+======================
+.. automodule:: src.repository.users
+  :members:
+  :undoc-members:
+  :show-inheritance:
 
 
 Indices and tables
