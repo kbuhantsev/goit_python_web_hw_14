@@ -1,15 +1,13 @@
-from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from libgravatar import Gravatar
 
-from src.database.db import get_db
 from src.database.models import User
 from src.schemas.schemas import UserSchema
 
 
-async def get_user_by_email(email: str, db: AsyncSession = Depends(get_db)):
+async def get_user_by_email(email: str, db: AsyncSession):
     """
     Get user by email
 
@@ -24,7 +22,7 @@ async def get_user_by_email(email: str, db: AsyncSession = Depends(get_db)):
     return user
 
 
-async def create_user(body: UserSchema, db: AsyncSession = Depends(get_db)):
+async def create_user(body: UserSchema, db: AsyncSession):
     """
     Create new user
 
@@ -39,7 +37,7 @@ async def create_user(body: UserSchema, db: AsyncSession = Depends(get_db)):
         avatar = g.get_image()
     except Exception as e:
         print(e)
-    new_user = User(**body.dict())
+    new_user = User(**body.model_dump(exclude_defaults=True))
     new_user.avatar = avatar
     db.add(new_user)
     await db.commit()

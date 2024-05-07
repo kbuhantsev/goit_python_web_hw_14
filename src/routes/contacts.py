@@ -16,7 +16,8 @@ router = APIRouter(prefix='/contacts', tags=["contacts"])
 @router.get("/",
             response_model=List[ContactSchemaResponse],
             description='No more than 10 requests per minute',
-            dependencies=[Depends(RateLimiter(times=10, seconds=60))])
+            dependencies=[Depends(RateLimiter(times=10, seconds=60))],
+            status_code=status.HTTP_200_OK)
 async def get_contacts(
         skip: int = 0,
         limit: int = 100,
@@ -40,7 +41,8 @@ async def get_contacts(
 @router.get("/search",
             response_model=List[ContactSchemaResponse],
             description='No more than 10 requests per minute',
-            dependencies=[Depends(RateLimiter(times=10, seconds=60))]
+            dependencies=[Depends(RateLimiter(times=10, seconds=60))],
+            status_code=status.HTTP_200_OK
             )
 async def search_contacts(name: str = None,
                           surname: str = None,
@@ -66,7 +68,8 @@ async def search_contacts(name: str = None,
 @router.get("/{contact_id}",
             response_model=ContactSchemaResponse,
             description='No more than 10 requests per minute',
-            dependencies=[Depends(RateLimiter(times=10, seconds=60))])
+            dependencies=[Depends(RateLimiter(times=10, seconds=60))],
+            status_code=status.HTTP_200_OK)
 async def get_contact_by_id(
         contact_id: int,
         db: AsyncSession = Depends(get_db),
@@ -90,7 +93,8 @@ async def get_contact_by_id(
 @router.post("/",
              response_model=ContactSchemaResponse,
              description='No more than 10 requests per minute',
-             dependencies=[Depends(RateLimiter(times=10, seconds=60))])
+             dependencies=[Depends(RateLimiter(times=1, seconds=1))],
+             status_code=status.HTTP_201_CREATED)
 async def create_contact(
         body: ContactSchema,
         db: AsyncSession = Depends(get_db),
@@ -106,14 +110,14 @@ async def create_contact(
     :rtype: ContactSchemaResponse
     """
     contact = await contacts_repo.create_contact(current_user, body, db)
-    print(contact)
     return contact
 
 
 @router.put("/{contact_id}",
             response_model=ContactSchemaResponse,
             description='No more than 10 requests per minute',
-            dependencies=[Depends(RateLimiter(times=10, seconds=60))])
+            dependencies=[Depends(RateLimiter(times=10, seconds=60))],
+            status_code=status.HTTP_200_OK)
 async def put_contact(
         body: ContactSchema,
         contact_id: int,
@@ -136,7 +140,7 @@ async def put_contact(
     return contact
 
 
-@router.delete("/{contact_id}", response_model=ContactSchemaResponse)
+@router.delete("/{contact_id}", response_model=ContactSchemaResponse, status_code=status.HTTP_200_OK)
 async def delete_contact(
         contact_id: int,
         db: AsyncSession = Depends(get_db),

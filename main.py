@@ -24,7 +24,7 @@ db_uri = settings.get_uri()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    r = await redis.Redis(host='localhost', port=6379, db=0, encoding="utf-8", decode_responses=True)
+    r = await redis.from_url("redis://localhost:6379", db=0, encoding="utf-8", decode_responses=True)
     await FastAPILimiter.init(r)
     yield
     await FastAPILimiter.close()

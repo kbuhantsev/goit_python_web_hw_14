@@ -75,7 +75,7 @@ async def create_contact(user: User, contact: ContactSchema, db: AsyncSession) -
     :return: contact
     :rtype: Contact
     """
-    contact = Contact(**contact.dict(), user_id=user.id)
+    contact = Contact(**contact.model_dump(exclude_unset=True), user_id=user.id)
     db.add(contact)
     await db.commit()
     await db.refresh(contact)
