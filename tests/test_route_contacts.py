@@ -66,39 +66,39 @@ def test_get_contact(client, token, contact, mock_ratelimiter):
     assert data["name"] == contact["name"]
 
 
-# def test_contact_not_found(client, token):
-#     response = client.get(
-#         "/api/contacts/999", headers={"Authorization": f"Bearer {token}"}
-#     )
-#
-#     assert response.status_code == 404, response.text
-#     data = response.json()
-#     assert data["detail"] == "Contact not found"
-#
-#
-# def test_update_contact(client, token, contact):
-#     response = client.patch(
-#         f"/api/contacts/{contact['id']}",
-#         json={"name": "Updated first name"},
-#         headers={"Authorization": f"Bearer {token}"},
-#     )
-#
-#     assert response.status_code == 200, response.text
-#     data = response.json()
-#     assert data["name"] == "Updated first name"
-#
-#
-# def test_delete_contact(client, token, contact):
-#     response = client.delete(
-#         f"/api/contacts/{contact['id']}", headers={"Authorization": f"Bearer {token}"}
-#     )
-#
-#     assert response.status_code == 204, response.text
-#
-#
-# def test_delete_contact_not_found(client, token, contact):
-#     response = client.delete(
-#         f"/api/contacts/999", headers={"Authorization": f"Bearer {token}"}
-#     )
-#
-#     assert response.status_code == 204, response.text
+def test_contact_not_found(client, token):
+    response = client.get(
+        "/api/contacts/999", headers={"Authorization": f"Bearer {token}"}
+    )
+
+    assert response.status_code == 404, response.text
+    data = response.json()
+    assert data["detail"] == "Contact not found"
+
+
+def test_update_contact(client, token, contact):
+    response = client.patch(
+        f"/api/contacts/{contact['id']}",
+        json={"name": "Updated first name"},
+        headers={"Authorization": f"Bearer {token}"},
+    )
+
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data["name"] == "Updated first name"
+
+
+def test_delete_contact(client, token, contact):
+    response = client.delete(
+        f"/api/contacts/{contact['id']}", headers={"Authorization": f"Bearer {token}"}
+    )
+
+    assert response.status_code == 204, response.text
+
+
+def test_delete_contact_not_found(client, token, contact):
+    response = client.delete(
+        f"/api/contacts/999", headers={"Authorization": f"Bearer {token}"}
+    )
+
+    assert response.status_code == 204, response.text
