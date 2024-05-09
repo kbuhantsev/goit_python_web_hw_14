@@ -66,20 +66,21 @@ def test_get_contact(client, token, contact, mock_ratelimiter):
     assert data["name"] == contact["name"]
 
 
-def test_contact_not_found(client, token):
+def test_contact_not_found(client, token, mock_ratelimiter):
     response = client.get(
         "/api/contacts/999", headers={"Authorization": f"Bearer {token}"}
     )
 
     assert response.status_code == 404, response.text
     data = response.json()
-    assert data["detail"] == "Contact not found"
+    assert data["detail"] == "Contact not found!"
 
 
-def test_update_contact(client, token, contact):
-    response = client.patch(
+def test_update_contact(client, token, contact, mock_ratelimiter):
+    contact["name"] = "Updated first name"
+    response = client.put(
         f"/api/contacts/{contact['id']}",
-        json={"name": "Updated first name"},
+        json=contact,
         headers={"Authorization": f"Bearer {token}"},
     )
 
@@ -88,17 +89,17 @@ def test_update_contact(client, token, contact):
     assert data["name"] == "Updated first name"
 
 
-def test_delete_contact(client, token, contact):
+def test_delete_contact(client, token, contact, mock_ratelimiter):
     response = client.delete(
         f"/api/contacts/{contact['id']}", headers={"Authorization": f"Bearer {token}"}
     )
 
-    assert response.status_code == 204, response.text
+    assert response.status_code == 200, response.text
 
 
-def test_delete_contact_not_found(client, token, contact):
+def test_delete_contact_not_found(client, token, contact, mock_ratelimiter):
     response = client.delete(
         f"/api/contacts/999", headers={"Authorization": f"Bearer {token}"}
     )
 
-    assert response.status_code == 204, response.text
+    assert response.status_code == 404, response.text

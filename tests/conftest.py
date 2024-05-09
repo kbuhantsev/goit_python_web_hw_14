@@ -4,6 +4,7 @@ import sys
 from unittest.mock import AsyncMock
 from fastapi.testclient import TestClient
 import pytest
+from redis import Redis
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 curr_path = Path(__file__).resolve().parent
@@ -30,6 +31,13 @@ def mock_ratelimiter(monkeypatch):
     monkeypatch.setattr(
         "fastapi_limiter.FastAPILimiter.http_callback", mock_rate_limiter
     )
+
+    redis = AsyncMock(spec=Redis)
+    redis.get = AsyncMock(return_value=None)
+    redis.set = AsyncMock(return_value=None)
+    redis.expire = AsyncMock(return_value=None)
+
+    monkeypatch.setattr("src.services.auth.auth_service.r", redis)
 
 
 @pytest.fixture(scope="module")

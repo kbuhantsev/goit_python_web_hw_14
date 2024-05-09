@@ -86,7 +86,7 @@ async def get_contact_by_id(
     """
     contact = await contacts_repo.get_contact(current_user, contact_id, db)
     if contact is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Сontact not found!")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Contact not found!")
     return contact
 
 
