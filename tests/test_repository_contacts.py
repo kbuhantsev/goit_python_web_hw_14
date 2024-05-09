@@ -72,7 +72,7 @@ class TestContactsRepository(unittest.IsolatedAsyncioTestCase):
             user_id=self.user.id,
         )
         mocked_contact = MagicMock()
-        mocked_contact.scalar_one_or_none.return_value = contact
+        mocked_contact.scalars.return_value.first.return_value = contact
         self.session.execute.return_value = mocked_contact
         result = await delete_contact(self.user, contact.id, self.session)
         self.assertEqual(result, contact)

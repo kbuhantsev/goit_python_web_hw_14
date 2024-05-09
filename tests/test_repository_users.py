@@ -56,7 +56,7 @@ class TestUsersRepository(unittest.IsolatedAsyncioTestCase):
             name="test",
             email="test@example.com",
             password="testtest",
-            avatar=None,
+            avatar="",
             confirmed=False,
         )
         mocked_user = MagicMock()
@@ -72,8 +72,13 @@ class TestUsersRepository(unittest.IsolatedAsyncioTestCase):
             name="test",
             email="test@example.com",
             password="testtest",
-            avatar=None,
+            avatar="",
             confirmed=True,
         )
+
+        mocked_user = MagicMock()
+        mocked_user.scalar_one_or_none.return_value = user
+        self.session.execute.return_value = mocked_user
+
         result = await update_avatar(email=user.email, url="test_url", db=self.session)
         self.assertEqual(result.avatar, "test_url")
